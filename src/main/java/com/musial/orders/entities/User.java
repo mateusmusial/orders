@@ -1,9 +1,12 @@
 package com.musial.orders.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -17,6 +20,10 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String phone;
+
+    @OneToMany(mappedBy = "client")
+    @JsonIgnore
+    private List<Order> orders = new ArrayList<>();
 
     public User() {
     }
@@ -60,6 +67,14 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrders(Order order) {
+        orders.add(order);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,11 +82,11 @@ public class User implements Serializable {
 
         User user = (User) o;
 
-        return id == user.id;
+        return id.equals(user.id);
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id.hashCode();
     }
 }
