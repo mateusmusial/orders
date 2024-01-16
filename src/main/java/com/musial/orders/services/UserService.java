@@ -2,7 +2,12 @@ package com.musial.orders.services;
 
 import com.musial.orders.entities.User;
 import com.musial.orders.repositories.UserRepository;
+import com.musial.orders.services.exceptions.DatabaseException;
+import com.musial.orders.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +25,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> obj = userRepository.findById(id);
-        return obj.get();
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User createUser(User user) {
@@ -28,15 +33,27 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException(id);
+        }
+
+        try {
+            userRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     public User editUserById(Long id, User newUser) {
-        User updatedUser = userRepository.getReferenceById(id);
-        updatedUser.setName(newUser.getName());
-        updatedUser.setEmail(newUser.getEmail());
-        updatedUser.setPhone(newUser.getPhone());
+        try {
+            User updatedUser = userRepository.getReferenceById(id);
+            updatedUser.setName(newUser.getName());
+            updatedUser.setEmail(newUser.getEmail());
+            updatedUser.setPhone(newUser.getPhone());
 
-        return userRepository.save(updatedUser);
+            return userRepository.save(updatedUser);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 }
