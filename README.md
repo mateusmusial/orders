@@ -1,3 +1,5 @@
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/mateusmusial/orders/blob/main/LICENSE)
+
 ## About Project
 
 On this project, I built a simple REST API with a domain model of an ordering application just to develop my skills with the Java Spring Boot framework.
