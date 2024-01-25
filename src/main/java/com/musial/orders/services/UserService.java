@@ -46,14 +46,20 @@ public class UserService {
 
     public User editUserById(Long id, User newUser) {
         try {
-            User updatedUser = userRepository.getReferenceById(id);
-            updatedUser.setName(newUser.getName());
-            updatedUser.setEmail(newUser.getEmail());
-            updatedUser.setPhone(newUser.getPhone());
+            User currentUser = userRepository.getReferenceById(id);
+            User updatedUser = updateUser(newUser, currentUser);
 
             return userRepository.save(updatedUser);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
+    }
+
+    private User updateUser(User newUser, User currentUser) {
+        currentUser.setName(newUser.getName());
+        currentUser.setEmail(newUser.getEmail());
+        currentUser.setPhone(newUser.getPhone());
+
+        return currentUser;
     }
 }
