@@ -1,16 +1,13 @@
 package com.musial.orders.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.musial.orders.entities.enums.OrderStatus;
 import jakarta.persistence.*;
-import org.springframework.stereotype.Service;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -48,10 +45,10 @@ public class Order implements Serializable {
     public Order() {
     }
 
-    public Order(Long id, Instant moment, OrderStatus orderStaus, User client) {
+    public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
         this.id = id;
         this.moment = moment;
-        setOrderStatus(orderStaus);
+        setOrderStatus(orderStatus);
         this.client = client;
     }
 
